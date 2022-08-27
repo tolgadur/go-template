@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"github.com/gorilla/mux"
-	http2 "github.com/tolgadur/email-project/backend/internal/api/v1/http"
+	httpv1 "github.com/tolgadur/email-project/backend/internal/api/v1/http"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -12,13 +13,19 @@ func main() {
 	fx.New(
 		fx.Provide(context.Background),
 		fx.Provide(mux.NewRouter),
-		fx.Invoke(http2.RegisterHttpServer),
+		fx.Provide(NewLogger),
+		fx.Invoke(httpv1.RegisterHttpServer),
 		fx.Invoke(registerHooks),
 	).Run()
 }
 
+func NewLogger() *zap.SugaredLogger {
+	logger, _ := zap.NewProduction()
+	return logger.Sugar()
+}
+
 func registerHooks(
-	lifecycle fx.Lifecycle, server http2.Server,
+	lifecycle fx.Lifecycle, server httpv1.Server,
 ) {
 	lifecycle.Append(
 		fx.Hook{

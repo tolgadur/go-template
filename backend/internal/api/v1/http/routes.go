@@ -5,6 +5,7 @@ import (
 )
 
 func (s *Server) RegisterRoutes() error {
+	s.Logger.Info("Registering routes")
 	s.Router.Handle("/{name}", httptransport.NewServer(
 		s.Endpoints.HelloWorld,
 		s.Codec.decodeHelloWorld2Request,

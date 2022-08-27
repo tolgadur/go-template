@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/tolgadur/email-project/backend/internal/api"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -17,10 +18,14 @@ var (
 
 type Codec struct {
 	fx.In
+
+	Logger *zap.SugaredLogger
 }
 
 func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	c.Logger.Info("decodeHelloWorldRequest")
 	if r == nil || r.Body == nil {
+		c.Logger.Error("Error malformed request")
 		return nil, errorMalformedRequest
 	}
 	var request api.HelloWorldRequest
@@ -28,13 +33,16 @@ func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (int
 		return nil, err
 	}
 	if request.Name == "" {
+		c.Logger.Error("Error malformed request: name is missing")
 		return nil, errorMalformedRequest
 	}
 	return &request, nil
 }
 
 func (c *Codec) decodeHelloWorld2Request(_ context.Context, r *http.Request) (interface{}, error) {
+	c.Logger.Info("decodeHelloWorldRequest")
 	if r == nil || r.Body == nil {
+		c.Logger.Error("Error malformed request")
 		return nil, errorMalformedRequest
 	}
 	vars := mux.Vars(r)
@@ -42,5 +50,6 @@ func (c *Codec) decodeHelloWorld2Request(_ context.Context, r *http.Request) (in
 }
 
 func (c *Codec) encode(ctx context.Context, w http.ResponseWriter, resp interface{}) error {
+	c.Logger.Info("encoding json response")
 	return httptransport.EncodeJSONResponse(ctx, w, resp)
 }
