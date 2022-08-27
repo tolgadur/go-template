@@ -5,6 +5,12 @@ import (
 )
 
 func (s *Server) RegisterRoutes() error {
+	s.Router.Handle("/{name}", httptransport.NewServer(
+		s.Endpoints.HelloWorld,
+		s.Codec.decodeHelloWorld2Request,
+		s.Codec.encode,
+	)).Methods("GET")
+
 	s.Router.Handle("/hello-world", httptransport.NewServer(
 		s.Endpoints.HelloWorld,
 		s.Codec.decodeHelloWorldRequest,

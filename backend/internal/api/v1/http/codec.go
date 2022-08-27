@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	httptransport "github.com/go-kit/kit/transport/http"
+	"github.com/gorilla/mux"
 	"github.com/tolgadur/email-project/backend/internal/api"
 	"go.uber.org/fx"
 	"net/http"
@@ -30,6 +31,14 @@ func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (int
 		return nil, errorMalformedRequest
 	}
 	return &request, nil
+}
+
+func (c *Codec) decodeHelloWorld2Request(_ context.Context, r *http.Request) (interface{}, error) {
+	if r == nil || r.Body == nil {
+		return nil, errorMalformedRequest
+	}
+	vars := mux.Vars(r)
+	return &api.HelloWorldRequest{vars["name"]}, nil
 }
 
 func (c *Codec) encode(ctx context.Context, w http.ResponseWriter, resp interface{}) error {
