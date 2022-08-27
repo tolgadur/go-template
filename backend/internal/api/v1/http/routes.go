@@ -1,0 +1,15 @@
+package http
+
+import (
+	httptransport "github.com/go-kit/kit/transport/http"
+)
+
+func (s *Server) RegisterRoutes() error {
+	s.Router.Handle("/hello-world", httptransport.NewServer(
+		s.Endpoints.HelloWorld,
+		s.Codec.decodeHelloWorldRequest,
+		s.Codec.encode,
+	)).Methods("GET")
+
+	return nil
+}
