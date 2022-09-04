@@ -10,6 +10,11 @@ test:
 run:
 	./bin/email-project
 
+download-registry-secrets:
+	kubectl create secret generic do-registry \
+      --from-file=.dockerconfigjson=docker-config.json \
+      --type=kubernetes.io/dockerconfigjson
+
 docker-build:
 	docker build --tag email-project .
 
@@ -21,21 +26,19 @@ docker-push:
 	&& docker push registry.digitalocean.com/email-project/main:latest
 
 run-postgres:
-	helm install postgresql -f ./internal/postgres/config.yml bitnami/postgresql
+	kubectl apply -f ./kubernetes/persistent-volume.yaml && \
+	helm install postgresql -f ./internal/postgres/values.yaml bitnami/postgresql --set volumePermissions.enabled=true
+
+delete-postgres:
+	helm delete postgresql && \
+	kubectl delete -f ./kubernetes/persistent-volume.yaml
 
 kube-deploy:
-	kubectl apply -f ./kubernetes/service.yml && \
-	kubectl apply -f ./kubernetes/deployment.yml && \
-	kubectl apply -f ./kubernetes/persistent-volume.yml && \
+	kubectl apply -f ./kubernetes/service.yaml && \
+	kubectl apply -f ./kubernetes/deployment.yaml && \
 	make run-postgres
-
-download-registry-secrets:
-	kubectl create secret generic do-registry \
-      --from-file=.dockerconfigjson=docker-config.json \
-      --type=kubernetes.io/dockerconfigjson
 
 cleanup:
 	kubectl delete deployment email-project && \
 	kubectl delete svc email-project-web-service && \
-	helm uninstall postgresql && \
-	kubectl delete -f ./kubernetes/persistent-volume.yml
+	make delete-postgres
