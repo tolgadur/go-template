@@ -4,6 +4,9 @@ deps:
 build:
 	go build -o ./bin/email-project cmd/server/main.go
 
+run:
+	./bin/email-project
+
 docker-build:
 	docker build --tag email-project .
 
