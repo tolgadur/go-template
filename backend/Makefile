@@ -4,6 +4,9 @@ deps:
 build:
 	go build -o ./bin/email-project cmd/server/main.go
 
+test:
+	go test ./...
+
 run:
 	./bin/email-project
 
