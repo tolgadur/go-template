@@ -27,7 +27,7 @@ docker-push:
 
 run-postgres:
 	kubectl apply -f ./kubernetes/persistent-volume.yaml && \
-	helm install postgresql -f ./internal/postgres/values.yaml bitnami/postgresql --set volumePermissions.enabled=true
+	helm install postgresql -f ./db/values.yaml bitnami/postgresql --set volumePermissions.enabled=true
 
 delete-postgres:
 	helm delete postgresql && \
