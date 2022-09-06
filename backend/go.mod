@@ -10,6 +10,8 @@ require (
 
 require go.uber.org/zap v1.19.1
 
+require github.com/lib/pq v1.10.6
+
 require (
 	github.com/go-kit/log v0.2.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
@@ -17,4 +19,5 @@ require (
 	go.uber.org/dig v1.15.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
+	github.com/VividCortex/gohistogram v1.0.0 // indirect
 )
