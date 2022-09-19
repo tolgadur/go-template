@@ -39,6 +39,14 @@ kube-deploy:
 	kubectl apply -f ./kubernetes/deployment.yaml && \
 	make run-postgres
 
+minikube-start:
+	minikube start && \
+	minikube tunnel
+
+minikube-stop:
+	minikube stop && \
+	minikube delete
+
 cleanup:
 	kubectl delete deployment email-project && \
 	kubectl delete svc email-project-web-service && \
