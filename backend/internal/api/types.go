@@ -1,6 +1,11 @@
 package api
 
-type HelloWorldRequest struct {
+type CreateHelloWorldRequest struct {
+	Name     string `json:"name"`
+	LastName string `json:"last_name"`
+}
+
+type GetHelloWorldRequest struct {
 	Name string `json:"name"`
 }
 

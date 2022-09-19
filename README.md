@@ -16,11 +16,13 @@ export PGUSER=postgres
 export PGHOST=localhost
 docker run -d --name postgres --net <NETWORK_NAME> -p 5432:5432 postgres:9.6.2 # bridge works out of the box for Docker on Mac
 make create-local-db 
+psql app_db # command to connect to the database locally through bash
 ```
+
 ## example requests
 ```bash
-❯ curl localhost:8080/Tolga
-{"message":"Hello, Tolga"}
+❯ curl localhost:8080/John
+{"message":"Hello, John Doe"}
 ```
 
 ## postgres

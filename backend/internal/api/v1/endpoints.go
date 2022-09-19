@@ -14,7 +14,7 @@ type Endpoints struct {
 }
 
 func (s *Endpoints) CreateHelloWorld(ctx context.Context, req interface{}) (interface{}, error) {
-	request, ok := req.(*api.HelloWorldRequest)
+	request, ok := req.(*api.CreateHelloWorldRequest)
 	if !ok {
 		return nil, errors.New("new internal server error")
 	}
@@ -22,7 +22,7 @@ func (s *Endpoints) CreateHelloWorld(ctx context.Context, req interface{}) (inte
 }
 
 func (s *Endpoints) GetHelloWorld(ctx context.Context, req interface{}) (interface{}, error) {
-	request, ok := req.(*api.HelloWorldRequest)
+	request, ok := req.(*api.GetHelloWorldRequest)
 	if !ok {
 		return nil, errors.New("new internal server error")
 	}

@@ -30,6 +30,7 @@ func main() {
 		fx.Provide(mux.NewRouter),
 		fx.Provide(NewLogger),
 		fx.Provide(connectToDB),
+		fx.Invoke(createDBSchema),
 		fx.Invoke(seedDB),
 		fx.Invoke(httpv1.RegisterHttpServer),
 		fx.Invoke(registerHooks),
@@ -88,16 +89,32 @@ func connectToDB(logger *zap.SugaredLogger) *sql.DB {
 	return db
 }
 
-func seedDB(db *sql.DB, logger *zap.SugaredLogger) {
+func createDBSchema(db *sql.DB, logger *zap.SugaredLogger) {
 	path := filepath.Join("db", "schema.sql")
+	c, err := ioutil.ReadFile(path)
+	if err != nil {
+		logger.Errorf("Error while reading schema file: %s", err)
+		panic(err)
+	}
+
+	schemaSql := string(c)
+	_, err = db.Exec(schemaSql)
+	if err != nil {
+		logger.Errorf("Error while creating DB schema: %s", err)
+		panic(err)
+	}
+}
+
+func seedDB(db *sql.DB, logger *zap.SugaredLogger) {
+	path := filepath.Join("db", "seeds.sql")
 	c, err := ioutil.ReadFile(path)
 	if err != nil {
 		logger.Errorf("Error while reading seed file: %s", err)
 		panic(err)
 	}
 
-	seedSql := string(c)
-	_, err = db.Exec(seedSql)
+	schemaSql := string(c)
+	_, err = db.Exec(schemaSql)
 	if err != nil {
 		logger.Errorf("Error while seeding DB: %s", err)
 		panic(err)

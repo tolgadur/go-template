@@ -28,7 +28,7 @@ func (c *Codec) decodeCreateHelloWorldRequest(_ context.Context, r *http.Request
 		c.Logger.Error("Error malformed request")
 		return nil, errorMalformedRequest
 	}
-	var request api.HelloWorldRequest
+	var request api.CreateHelloWorldRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *Codec) decodeGetHelloWorldRequest(_ context.Context, r *http.Request) (
 		return nil, errorMalformedRequest
 	}
 	vars := mux.Vars(r)
-	return &api.HelloWorldRequest{vars["name"]}, nil
+	return &api.GetHelloWorldRequest{vars["name"]}, nil
 }
 
 func (c *Codec) encode(ctx context.Context, w http.ResponseWriter, resp interface{}) error {
