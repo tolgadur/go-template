@@ -9,6 +9,7 @@ If you want to run this with kubernetes you have to push the docker image to a r
 then run `make kube-deploy` to deploy the application to your kubernetes cluster. If you want to test this locally, you can use
 `minikube start`. As this application relies on a loadbalancer service, make sure to use `minikube tunnel` in this case.
 
+Please note that if you start the application without kubernetes locally or through docker you will need to set up a postgres server.
 ## example requests
 ```bash
 ❯ curl localhost:8080/Tolga
