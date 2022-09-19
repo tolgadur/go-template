@@ -3,7 +3,7 @@ auth:
   enablePostgresUser: true
   postgresPassword: "StrongPassword"
   username: "postgres"
-  password: "AppPassword"
+  password: "StrongPassword"
   database: "app_db"
 
 # The postgres helm chart deployment will be using PVC postgresql-data-claim

@@ -17,10 +17,10 @@ import (
 
 const (
 	httpPort     = 8080
-	host         = "postgresql.default.svc.cluster.local" // replace with localhost for local development
 	postgresPort = 5432
+	host         = "postgresql.default.svc.cluster.local" // replace with localhost for local development
 	user         = "postgres"
-	password     = "AppPassword"
+	password     = "StrongPassword"
 	dbname       = "app_db"
 )
 
