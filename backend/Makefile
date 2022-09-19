@@ -35,6 +35,7 @@ kube-delete-postgres:
 	kubectl delete -f ./kubernetes/persistent-volume.yaml
 
 kube-run-app:
+	make download-registry-secrets && \
 	kubectl apply -f ./kubernetes/service.yaml && \
 	kubectl apply -f ./kubernetes/deployment.yaml
 
