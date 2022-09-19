@@ -22,7 +22,7 @@ type Codec struct {
 	Logger *zap.SugaredLogger
 }
 
-func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (interface{}, error) {
+func (c *Codec) decodeCreateHelloWorldRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	c.Logger.Info("decodeHelloWorldRequest")
 	if r == nil || r.Body == http.NoBody || r.Body == nil {
 		c.Logger.Error("Error malformed request")
@@ -39,7 +39,7 @@ func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (int
 	return &request, nil
 }
 
-func (c *Codec) decodeHelloWorld2Request(_ context.Context, r *http.Request) (interface{}, error) {
+func (c *Codec) decodeGetHelloWorldRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	c.Logger.Info("decodeHelloWorldRequest")
 	if r == nil || r.URL == nil {
 		c.Logger.Error("Error malformed request")

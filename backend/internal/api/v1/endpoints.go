@@ -13,10 +13,18 @@ type Endpoints struct {
 	Service api.Service
 }
 
-func (s *Endpoints) HelloWorld(ctx context.Context, req interface{}) (interface{}, error) {
+func (s *Endpoints) CreateHelloWorld(ctx context.Context, req interface{}) (interface{}, error) {
 	request, ok := req.(*api.HelloWorldRequest)
 	if !ok {
 		return nil, errors.New("new internal server error")
 	}
-	return s.Service.HelloWorld(ctx, request)
+	return s.Service.CreateHelloWorld(ctx, request)
+}
+
+func (s *Endpoints) GetHelloWorld(ctx context.Context, req interface{}) (interface{}, error) {
+	request, ok := req.(*api.HelloWorldRequest)
+	if !ok {
+		return nil, errors.New("new internal server error")
+	}
+	return s.Service.GetHelloWorld(ctx, request)
 }

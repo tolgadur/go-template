@@ -6,17 +6,17 @@ import (
 
 func (s *Server) RegisterRoutes() error {
 	s.Logger.Info("Registering routes")
-	s.Router.Handle("/{name}", httptransport.NewServer(
-		s.Endpoints.HelloWorld,
-		s.Codec.decodeHelloWorld2Request,
+	s.Router.Handle("/hello-world/{name}", httptransport.NewServer(
+		s.Endpoints.GetHelloWorld,
+		s.Codec.decodeGetHelloWorldRequest,
 		s.Codec.encode,
 	)).Methods("GET")
 
 	s.Router.Handle("/hello-world", httptransport.NewServer(
-		s.Endpoints.HelloWorld,
-		s.Codec.decodeHelloWorldRequest,
+		s.Endpoints.CreateHelloWorld,
+		s.Codec.decodeCreateHelloWorldRequest,
 		s.Codec.encode,
-	)).Methods("GET")
+	)).Methods("POST")
 
 	return nil
 }
