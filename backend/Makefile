@@ -26,18 +26,22 @@ docker-push:
 	docker tag email-project registry.digitalocean.com/email-project/main:latest && \
  	docker push registry.digitalocean.com/email-project/main:latest
 
-run-postgres:
+kube-run-postgres:
 	kubectl apply -f ./kubernetes/persistent-volume.yaml && \
 	helm install postgresql -f ./db/values.yaml bitnami/postgresql --set volumePermissions.enabled=true
 
-delete-postgres:
+kube-delete-postgres:
 	helm delete postgresql && \
 	kubectl delete -f ./kubernetes/persistent-volume.yaml
 
-kube-deploy:
+kube-run-app:
 	kubectl apply -f ./kubernetes/service.yaml && \
-	kubectl apply -f ./kubernetes/deployment.yaml && \
-	make run-postgres
+	kubectl apply -f ./kubernetes/deployment.yaml
+
+kube-cleanup:
+	kubectl delete deployment email-project && \
+	kubectl delete svc email-project-web-service && \
+	make kube-delete-postgres
 
 minikube-start:
 	minikube start && \
@@ -50,8 +54,3 @@ minikube-stop:
 create-local-db:
 	psql  -c 'DROP DATABASE IF EXISTS app_db;' && \
 	psql  -c 'CREATE DATABASE app_db;'
-
-cleanup:
-	kubectl delete deployment email-project && \
-	kubectl delete svc email-project-web-service && \
-	make delete-postgres
