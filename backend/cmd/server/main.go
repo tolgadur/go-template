@@ -8,7 +8,9 @@ import (
 	httpv1 "github.com/tolgadur/email-project/backend/internal/api/v1/http"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
+	"io/ioutil"
 	"net/http"
+	"path/filepath"
 
 	_ "github.com/lib/pq"
 )
@@ -27,7 +29,7 @@ func main() {
 		fx.Provide(context.Background),
 		fx.Provide(mux.NewRouter),
 		fx.Provide(NewLogger),
-		fx.Invoke(connectToDB),
+		fx.Provide(connectToDB),
 		fx.Invoke(seedDB),
 		fx.Invoke(httpv1.RegisterHttpServer),
 		fx.Invoke(registerHooks),
@@ -57,27 +59,47 @@ func registerHooks(
 				}()
 				return nil
 			},
+			OnStop: func(ctx context.Context) error {
+				closeDB(server.DB, logger)
+				return nil
+			},
 		},
 	)
 }
 
-func connectToDB() {
+func closeDB(db *sql.DB, logger *zap.SugaredLogger) {
+	logger.Info("Closing DB connection")
+	err := db.Close()
+	if err != nil {
+		logger.Errorf("Error while closing DB connection: %s", err)
+		panic(err)
+	}
+}
+
+func connectToDB(logger *zap.SugaredLogger) *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, postgresPort, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
+	if err != nil || db.Ping() != nil {
+		logger.Errorf("Error while connecting to DB: %s", err)
 		panic(err)
 	}
-	defer db.Close()
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Successfully connected!")
+	logger.Info("Successfully connected to DB!")
+	return db
 }
 
-func seedDB() {
+func seedDB(db *sql.DB, logger *zap.SugaredLogger) {
+	path := filepath.Join("db", "schema.sql")
+	c, err := ioutil.ReadFile(path)
+	if err != nil {
+		logger.Errorf("Error while reading seed file: %s", err)
+		panic(err)
+	}
 
+	seedSql := string(c)
+	_, err = db.Exec(seedSql)
+	if err != nil {
+		logger.Errorf("Error while seeding DB: %s", err)
+		panic(err)
+	}
 }

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"database/sql"
 	"github.com/gorilla/mux"
 	"github.com/tolgadur/email-project/backend/internal/api/v1"
 	"go.uber.org/fx"
@@ -14,6 +15,7 @@ type Server struct {
 	Router    *mux.Router
 	Codec     Codec
 	Endpoints v1.Endpoints
+	DB        *sql.DB
 }
 
 func RegisterHttpServer(server Server) error {
