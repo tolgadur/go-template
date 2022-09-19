@@ -48,7 +48,13 @@ func registerHooks(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
 				http.Handle("/", server.Router)
-				go http.ListenAndServe(fmt.Sprintf(":%s", httpPort), server.Router)
+				go func() {
+					err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), server.Router)
+					if err != nil {
+						logger.Errorf("Error while starting HTTP server: %s", err)
+						panic(err)
+					}
+				}()
 				return nil
 			},
 		},

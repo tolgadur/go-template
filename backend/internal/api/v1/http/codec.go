@@ -24,7 +24,7 @@ type Codec struct {
 
 func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	c.Logger.Info("decodeHelloWorldRequest")
-	if r == nil || r.Body == nil {
+	if r == nil || r.Body == http.NoBody || r.Body == nil {
 		c.Logger.Error("Error malformed request")
 		return nil, errorMalformedRequest
 	}
@@ -41,7 +41,7 @@ func (c *Codec) decodeHelloWorldRequest(_ context.Context, r *http.Request) (int
 
 func (c *Codec) decodeHelloWorld2Request(_ context.Context, r *http.Request) (interface{}, error) {
 	c.Logger.Info("decodeHelloWorldRequest")
-	if r == nil || r.Body == nil {
+	if r == nil || r.URL == nil {
 		c.Logger.Error("Error malformed request")
 		return nil, errorMalformedRequest
 	}
