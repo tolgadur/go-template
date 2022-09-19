@@ -51,13 +51,7 @@ func registerHooks(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
 				http.Handle("/", server.Router)
-				go func() {
-					err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), server.Router)
-					if err != nil {
-						logger.Errorf("Error while starting HTTP server: %s", err)
-						panic(err)
-					}
-				}()
+				go startHttpServer(logger, server)
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {
@@ -66,6 +60,14 @@ func registerHooks(
 			},
 		},
 	)
+}
+
+func startHttpServer(logger *zap.SugaredLogger, server httpv1.Server) {
+	err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), server.Router)
+	if err != nil {
+		logger.Errorf("Error while starting HTTP server: %s", err)
+		panic(err)
+	}
 }
 
 func closeDB(db *sql.DB, logger *zap.SugaredLogger) {
@@ -80,8 +82,10 @@ func closeDB(db *sql.DB, logger *zap.SugaredLogger) {
 func connectToDB(logger *zap.SugaredLogger) *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, postgresPort, user, password, dbname)
+	logger.Infof("Connecting to DB: %s", psqlInfo)
+
 	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil || db.Ping() != nil {
+	if err != nil {
 		logger.Errorf("Error while connecting to DB: %s", err)
 		panic(err)
 	}
