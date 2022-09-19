@@ -41,7 +41,9 @@ func NewLogger() *zap.SugaredLogger {
 
 func registerHooks(
 	lifecycle fx.Lifecycle, server httpv1.Server,
+	logger *zap.SugaredLogger,
 ) {
+	logger.Infof("Starting HTTP server on port %d", httpPort)
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
