@@ -2,7 +2,7 @@
 auth:
   enablePostgresUser: true
   postgresPassword: "StrongPassword"
-  username: "app1"
+  username: "postgres"
   password: "AppPassword"
   database: "app_db"
 

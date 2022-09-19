@@ -47,6 +47,10 @@ minikube-stop:
 	minikube stop && \
 	minikube delete
 
+create-local-db:
+	psql  -c 'DROP DATABASE IF EXISTS app_db;' && \
+	psql  -c 'CREATE DATABASE app_db;'
+
 cleanup:
 	kubectl delete deployment email-project && \
 	kubectl delete svc email-project-web-service && \

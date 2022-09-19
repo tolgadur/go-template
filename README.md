@@ -10,6 +10,13 @@ then run `make kube-deploy` to deploy the application to your kubernetes cluster
 `minikube start`. As this application relies on a loadbalancer service, make sure to use `minikube tunnel` in this case.
 
 Please note that if you start the application without kubernetes locally or through docker you will need to set up a postgres server.
+You can do this with the following steps:
+```bash
+export PGUSER=postgres
+export PGHOST=localhost
+docker run -d --name postgres --net <NETWORK_NAME> -p 5432:5432 postgres:9.6.2 # bridge works out of the box for Docker on Mac
+make create-local-db 
+```
 ## example requests
 ```bash
 ❯ curl localhost:8080/Tolga
