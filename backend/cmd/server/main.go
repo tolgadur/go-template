@@ -5,23 +5,14 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 	httpv1 "github.com/tolgadur/email-project/backend/internal/api/v1/http"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-
-	_ "github.com/lib/pq"
-)
-
-const (
-	httpPort     = 8080
-	postgresPort = 5432
-	host         = "postgresql.default.svc.cluster.local" // replace with localhost for local development
-	user         = "postgres"
-	password     = "StrongPassword"
-	dbname       = "app_db"
 )
 
 func main() {
@@ -29,6 +20,8 @@ func main() {
 		fx.Provide(context.Background),
 		fx.Provide(mux.NewRouter),
 		fx.Provide(NewLogger),
+		fx.Invoke(getConfigurations),
+
 		fx.Provide(connectToDB),
 		fx.Invoke(createDBSchema),
 		fx.Invoke(seedDB),
@@ -46,7 +39,7 @@ func registerHooks(
 	lifecycle fx.Lifecycle, server httpv1.Server,
 	logger *zap.SugaredLogger,
 ) {
-	logger.Infof("Starting HTTP server on port %d", httpPort)
+	logger.Infof("Starting HTTP server on port %d", viper.Get("http.port"))
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
@@ -62,8 +55,19 @@ func registerHooks(
 	)
 }
 
+func getConfigurations(logger *zap.SugaredLogger) {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		logger.Errorf("Error while reading config file: %s", err)
+		panic(err)
+	}
+}
+
 func startHttpServer(logger *zap.SugaredLogger, server httpv1.Server) {
-	err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), server.Router)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", viper.Get("http.port")), server.Router)
 	if err != nil {
 		logger.Errorf("Error while starting HTTP server: %s", err)
 		panic(err)
@@ -80,6 +84,12 @@ func closeDB(db *sql.DB, logger *zap.SugaredLogger) {
 }
 
 func connectToDB(logger *zap.SugaredLogger) *sql.DB {
+	host := viper.Get("db.host")
+	postgresPort := viper.Get("db.port")
+	user := viper.Get("db.user")
+	password := viper.Get("db.password")
+	dbname := viper.Get("db.name")
+
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, postgresPort, user, password, dbname)
 	logger.Infof("Connecting to DB: %s", psqlInfo)

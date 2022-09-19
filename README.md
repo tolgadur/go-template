@@ -15,7 +15,7 @@ You can do this with the following steps:
 ```bash
 export PGUSER=postgres
 export PGHOST=localhost
-docker run -d --name postgres --net <NETWORK_NAME> -p 5432:5432 postgres:9.6.2 # bridge works out of the box for Docker on Mac
+docker run -d --name postgres --net bridge -p 5432:5432 postgres:9.6.2 # replace bridge if you aren't using Docker on the Mac
 make create-local-db 
 psql app_db # command to connect to the database locally through bash
 ```
