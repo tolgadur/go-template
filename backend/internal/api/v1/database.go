@@ -30,7 +30,7 @@ func ConnectToDB(logger *zap.SugaredLogger) *sql.DB {
 	logger.Infof("Connecting to DB: %s", psqlInfo)
 
 	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
+	if err != nil || db.Ping() != nil {
 		logger.Errorf("Error while connecting to DB: %s", err)
 		panic(err)
 	}

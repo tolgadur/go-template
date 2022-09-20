@@ -1,7 +1,6 @@
 http.port: 8080
-db.host: localhost
 db.port: 5432
-#db.host: postgresql.default.svc.cluster.local # replace with localhost for local development
+db.host: postgresql.default.svc.cluster.local # replace with localhost for local development
 db.user: postgres
 db.password: StrongPassword
 db.name: app_db
