@@ -1,5 +1,6 @@
 # email-project
-This is a fun project with no purpose yet.
+This is an opinionated template for go projects. If you want to add a frontend and agree with my choise of framework, 
+use `npx create-react-app my-app --template typescript`.
 
 ## how to run
 You can build and run this either locally with `make build` and `make run` or with docker with `make docker-build` and 
@@ -10,15 +11,8 @@ then run `make kube-run-postgres` to run your postgres server in kubernetes and`
 to your kubernetes cluster. If you want to test this locally, you can use `minikube start`. As this application relies 
 on a loadbalancer service, make sure to use `minikube tunnel` in this case.
 
-Please note that if you start the application without kubernetes locally or through docker you will need to set up a postgres server.
-You can do this with the following steps:
-```bash
-export PGUSER=postgres
-export PGHOST=localhost
-docker run -d --name postgres --net bridge -p 5432:5432 postgres:9.6.2 # replace bridge if you aren't using Docker on the Mac
-make create-local-db 
-psql app_db # command to connect to the database locally through bash
-```
+Please note that if you start the application without kubernetes locally or through docker you will need to set up a postgres server. 
+You can find instructions on how to do that bellow.
 
 ## example requests
 ```bash
@@ -27,7 +21,7 @@ psql app_db # command to connect to the database locally through bash
 ```
 
 ## postgres
-To start the postgres server, run `make run-postgres`. This will start a persistent volume and 
+To start the postgres server in kubernetes, run `make kube-run-postgres`. This will start a persistent volume and 
 start the helm chart with all necessary rights. You can then connect to the postgres server with: 
 
 ```bash
@@ -35,4 +29,15 @@ start the helm chart with all necessary rights. You can then connect to the post
 ❯ kubectl run postgresql-dev-client --rm --tty -i --restart='Never' --namespace default --image docker.io/bitnami/postgresql:14.1.0-debian-10-r80 --env="PGPASSWORD=$POSTGRES_PASSWORD" \
 --command -- psql --host postgresql -U app1 -d app_db -p 5432
 ❯ \conninfo # command to check if you are connected to the correct database
+```
+
+If you want to run postgres server locally, you can use the following commands:
+
+```bash
+```bash
+export PGUSER=postgres
+export PGHOST=localhost
+docker run -d --name postgres --net bridge -p 5432:5432 postgres:9.6.2 # replace bridge if you aren't using Docker on the Mac
+make create-local-db 
+psql app_db # command to connect to the database locally through bash
 ```
