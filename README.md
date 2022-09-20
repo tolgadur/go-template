@@ -1,6 +1,7 @@
-# email-project
-This is an opinionated template for go projects. If you want to add a frontend and agree with my choise of framework, 
-use `npx create-react-app my-app --template typescript`.
+# go-template
+This is an opinionated template for go projects. The kubernetes and make files still have `email-project` written on them
+which was reflects a previous use of this repository. Please change them to your project name. If you want to add a frontend and 
+agree with my choise of framework, use `npx create-react-app my-app --template typescript`.
 
 ## how to run
 You can build and run this either locally with `make build` and `make run` or with docker with `make docker-build` and 
