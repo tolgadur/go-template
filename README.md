@@ -34,7 +34,6 @@ start the helm chart with all necessary rights. You can then connect to the post
 If you want to run postgres server locally, you can use the following commands:
 
 ```bash
-```bash
 export PGUSER=postgres
 export PGHOST=localhost
 docker run -d --name postgres --net bridge -p 5432:5432 postgres:9.6.2 # replace bridge if you aren't using Docker on the Mac
