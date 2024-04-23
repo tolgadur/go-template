@@ -38,6 +38,7 @@ If you want to run postgres server locally, you can use the following commands:
 export PGUSER=postgres
 export PGHOST=localhost
 docker run -d --name postgres --net bridge -p 5432:5432 postgres:9.6.2 # replace bridge if you aren't using Docker on the Mac
+docker run -d --name postgres --net bridge -p 5432:5432 postgres:9.6.2-alpine # for apple sillicon
 make create-local-db 
 psql app_db # command to connect to the database locally through bash
 ```
